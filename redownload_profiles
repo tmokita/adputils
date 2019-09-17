@@ -10,17 +10,19 @@ target_names = ARGV
 service = AdpService.new
 client = service.create_client(team)
 
-Dir.glob(ENV['HOME'] + '/Library/MobileDevice/Provisioning Profiles/*.mobileprovision').each do |path|
-  plain_plist = `security cms -D -i '#{path}' 2> /dev/null`
-  plist = Plist.parse_xml(plain_plist)
-  name = plist['Name']
-  if target_names.any? {|n| n == name }
-    puts "delete #{path}"
-    File.delete(path)
-  end
-end
+# Dir.glob(ENV['HOME'] + '/Library/MobileDevice/Provisioning Profiles/*.mobileprovision').each do |path|
+#   plain_plist = `security cms -D -i '#{path}' 2> /dev/null`
+#   plist = Plist.parse_xml(plain_plist)
+#   name = plist['Name']
+#   if target_names.any? {|n| n == name }
+#     puts "delete #{path}"
+#     File.delete(path)
+#   end
+# end
 
-profiles = client.provisioning_profiles.select {|p| target_names.any? {|v| v == p['name'] } }
+# profiles = client.provisioning_profiles.select {|p| target_names.any? {|v| v == p['name'] } }
+profiles = client.provisioning_profiles
+
 profiles.each do |profile|
   name = profile['name']
   target_path = ENV['HOME'] + '/Library/MobileDevice/Provisioning Profiles/' + profile['UUID'] + '.mobileprovision'
